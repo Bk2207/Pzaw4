@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/dbms.css">
+    <link rel="stylesheet" href="/css/enemies.css">
+    <link rel="stylesheet" href="css/nav.css">
+    <title><%= title %></title>
+  </head>
+
+  <body>
+    <%- include("header.ejs") %>
+    <h1><%= title %></h1>
+    <form method="post" action="/dbms/add">
+        <input type="text" name="Name" id="Enemy_Name" minlength="1" maxlength="500" placeholder="Enemy name" required>
+        <input type="text" name="Enemy_Type" id="Enemy_Type" minlength="1" maxlength="500" placeholder="Enemy type" required>
+        <input type="number" name="Geo_Dropped" id="Geo_Dropped" minlength="1" maxlength="500" placeholder="Geo Dropped" required>
+        <input type="number" name="Health" id="Enemy_Health" minlength="1" maxlength="500" placeholder="Enemy Health" required>
+        <input type="number" name="Damage" id="Enemy_Damage" minlength="1" maxlength="500" placeholder="Damage Dealt by Enemy" required>
+        <input type="submit" value="Send" id="Submit">
+    </form><br>
+    <main>
+      <table>
+        <th>Name</th>
+        <th>Enemy Type</th>
+        <th>Geo Dropped</th>
+        <th>Health</th>
+        <th>Damage</th>
+        <th colspan="2">DML</th>
+         <% for (var i = 0 ; i < enemies.length ; i++){ %>
+        <tr>
+          <td><%= enemies[i]["Name"] %></td>
+          <td><%= enemies[i]["Enemy_Type"] %></td>
+          <td><%= enemies[i]["Geo_Dropped"] %></td>
+          <td><%= enemies[i]["Health"] %></td>
+          <td><%= enemies[i]["Damage"] %></td>
+          <td><form action="/dbms/delete" method="post"><input type="number" value="<%= enemies[i]['Id'] %>" name="Id" hidden><input type="submit" value="Delete" id="Submit"></form></td>
+          <td><form action="/dbms/pre_change" method="post"><input type="number" value="<%= enemies[i]['Id'] %>" name="Id" hidden><input type="submit" value="Edit" id="Submit"></form></td>
+        </tr>
+        <% } %>
+      </table>
+    </main>
+  </body>
+</html>

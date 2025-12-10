@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/dbms.css">
+    <link rel="stylesheet" href="/css/enemies.css">
+    <link rel="stylesheet" href="/css/nav.css">
+    <title><%= title %></title>
+</head>
+<body>
+    <%- include("header.ejs") %><br>
+    <form action="/dbms/change" method="post">
+        <input type="text" name="Name" id="Enemy_Name" minlength="1" maxlength="500" placeholder="Enemy name" value="<%= enemy['Name'] %>" required>
+        <input type="text" name="Enemy_Type" id="Enemy_Type" minlength="1" maxlength="500" placeholder="Enemy type" value="<%= enemy['Enemy_Type'] %>" required>
+        <input type="number" name="Geo_Dropped" id="Geo_Dropped" minlength="1" maxlength="500" placeholder="Geo Dropped" value="<%= enemy['Geo_Dropped'] %>" required>
+        <input type="number" name="Health" id="Enemy_Health" minlength="1" maxlength="500" placeholder="Enemy Health" value="<%= enemy['Health'] %>" required>
+        <input type="number" name="Damage" id="Enemy_Damage" minlength="1" maxlength="500" placeholder="Damage Dealt by Enemy" value="<%= enemy['Damage'] %>" required>
+        <input type="submit" value="Send" id="Submit">
+    </form>
+</body>
+</html>

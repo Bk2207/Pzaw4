@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/enemies.css">
+    <link rel="stylesheet" href="css/nav.css">
+    <title><%= title %></title>
+  </head>
+
+  <body>
+    <%- include("header.ejs") %>
+    <main>
+      <h1><%= title %></h1>
+      <table>
+        <th>Name</th>
+        <th>Enemy Type</th>
+        <th>Geo Dropped</th>
+        <th>Health</th>
+        <th>Damage</th>
+         <% for (var i = 0 ; i < enemies.length ; i++){ %>
+        <tr>
+          <td><%= enemies[i]["Name"] %></td>
+          <td><%= enemies[i]["Enemy_Type"] %></td>
+          <td><%= enemies[i]["Geo_Dropped"] %></td>
+          <td><%= enemies[i]["Health"] %></td>
+          <td><%= enemies[i]["Damage"] %></td>
+        </tr>
+        <% } %>
+      </table>
+    </main>
+  </body>
+</html>

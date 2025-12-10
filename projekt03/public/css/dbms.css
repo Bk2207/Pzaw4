@@ -1,0 +1,17 @@
+form{
+    text-align: center;
+}
+form > input{
+    background-color: rgb(255, 255, 255, 0.9);
+
+    margin: 0.5rem;
+
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    border-bottom: 2px black solid;
+}
+
+#Submit{
+    border-radius: 15px;
+}
