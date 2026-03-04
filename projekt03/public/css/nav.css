@@ -7,20 +7,34 @@ nav{
     align-items: center;
 }
 
-nav > a{
-    border-radius: 20px;
-    margin: 1rem;
+nav > div{
+    display: flex;
+    justify-content: end;
+    align-items: center;
+    
+    height: 3rem;
+    width: calc(100/3 * 1rem);
+}
+
+nav > div > a{
+    width: 100%;
     text-align: center;
 }
 
-nav > a:link{
+nav > div[id='account_handling'] > a{
+    width: auto;
+    padding: 2vw;
+    text-align: end;
+}
+
+nav > div > a:link{
     color: white;
 }
 
-nav > a:visited{
+nav > div > a:visited{
     color: white;
 }
 
-nav > a:active{
+nav > div > a:active{
     color: white;
 }

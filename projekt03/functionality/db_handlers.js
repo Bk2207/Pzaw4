@@ -5,6 +5,7 @@ const db = new DatabaseSync(db_path);
 
 db.exec(`CREATE TABLE IF NOT EXISTS "Hk_Enemies" (
 	"Id"	INTEGER,
+    "User_Id" INTEGER,
 	"Name"	TEXT NOT NULL,
 	"Enemy_Type"	TEXT DEFAULT 'Normal',
 	"Geo_Dropped"	INTEGER NOT NULL,

@@ -23,6 +23,8 @@ app.get("/dbms", (req, res) =>{
     enemies : getAllEnemyData()});
 });
 
+app.get("/")
+
 app.post("/dbms/pre_change", (req, res)=>{
     res.render("change_menu",
         {enemy : getEnemyData(req.body.Id),
