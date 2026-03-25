@@ -1,0 +1,22 @@
+{
+  "name": "pzaw_second_task_for_a_garde",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "app": "node --watch --env-file .env ./index.js",
+    "seeder": "node --watch --env-file .env ./utils/db_seeder.js",
+    "generate_env": "./utils/generate_env.sh > .env",
+    "create_admin": "node --watch --env-file .env ./utils/generate_admin.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "dependencies": {
+    "argon2": "^0.44.0",
+    "cookie-parser": "^1.4.7",
+    "ejs": "^3.1.10",
+    "express": "^5.2.1"
+  }
+}

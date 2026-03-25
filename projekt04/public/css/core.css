@@ -1,0 +1,16 @@
+@font-face {
+    font-family: hk;
+    src: url(../miscellaneous/Trajan_Pro_Regular.ttf);
+}
+
+html{
+    font-family: hk;
+    background-image: url(../miscellaneous/background_image.png);
+    background-color: rgb(255, 255, 255, 0.2);
+    background-blend-mode: lighten;
+
+    background-repeat: no-repeat;
+    background-size: cover;
+
+    color: white;
+}

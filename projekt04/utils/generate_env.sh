@@ -1,0 +1,1 @@
+echo PEPPER=\"$(cat /dev/random | tr -cd "[:xdigit:]" | head -c64)\"
