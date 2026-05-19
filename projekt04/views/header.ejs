@@ -1,8 +1,8 @@
 <nav>
     <div><a href="/">Enemy list</a></div>
-    <div><a href="/dbms">Contributions</a></div>
+    <div><a href="/contributions">Contributions</a></div>
     <% if(is_cookie){ %>
-    <div id="account_handling"><p>Witaj <%= user_name %></p><img src="/miscellaneous/deafult_user_profile.svg"><form action="/log_out" method="post"><input type="submit" value="Log out"></form></div>
+    <div id="account_handling"><p>Witaj <%= user_name %></p><img src="/miscellaneous/deafult_user_profile.svg"><form action="/sign_out" method="post"><input type="submit" value="Log out"></form></div>
     <% }else{ %>
     <div id="account_handling"><a href="/sign_in">Sign in</a> <a href="/sing_up">Sign up</a> </div>
     <% } %>

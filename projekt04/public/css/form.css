@@ -1,18 +1,26 @@
 #form{
     display: flex;
     flex-wrap: wrap;
-    flex-direction: row;
+    flex-direction: column;
     justify-content: center;
     align-items: baseline;
 
     margin: 1rem;
 }
+
+#form[name="enemy_add"]{
+    flex-direction: row;
+}
+
 #form > input{
+    display: flex;
+    align-self: center;
+
     background-color: rgba(255, 255, 255, 0.76);
 
     margin: 0.5rem;
     height: 2rem;
-    aspect-ratio: 1/0.25;
+    aspect-ratio: 2.5/0.25;
 
     border-radius: 15px;
     border: 2px black solid;
@@ -23,4 +31,7 @@
 #form > input::placeholder{
     text-align: center;
     color: black
+}
+#form > #CSRF_Token{
+    display: none;
 }

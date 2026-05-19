@@ -14,3 +14,9 @@ html{
 
     color: white;
 }
+
+#problem_msg{
+    text-align: center;
+    font-size: 200%;
+    font-weight: bold;
+}

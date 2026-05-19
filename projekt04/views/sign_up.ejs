@@ -11,11 +11,14 @@
 <body>
     <%- include("header.ejs") %>
 
-    <form action="/account_create" method="post" id="form">
-        <input type="text" name="login" placeholder="Please enter a username" maxlength="200" required>
-        <input type="text" name="password" placeholder="Please enter a password you'd like to use" required>
-        <input type="text" name="password_repeat" placeholder="Please repeat the password" required>
+    <p id="problem_msg"><%= creation_msg %></p>
+
+    <form action="/account_sign_up" method="post" id="form">
+        <input type="text" name="username" placeholder="Please enter a username" minlength="3" maxlength="200" required>
+        <input type="password" name="password" placeholder="Please enter a password you'd like to use" required>
+        <input type="password" name="password_repeat" placeholder="Please repeat the password" required>
         <input type="submit" value="Create account">
     </form>
+
 </body>
 </html>

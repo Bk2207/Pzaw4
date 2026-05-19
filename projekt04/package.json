@@ -6,8 +6,7 @@
   "scripts": {
     "app": "node --watch --env-file .env ./index.js",
     "seeder": "node --watch --env-file .env ./utils/db_seeder.js",
-    "generate_env": "./utils/generate_env.sh > .env",
-    "create_admin": "node --watch --env-file .env ./utils/generate_admin.js"
+    "generate_env": "./utils/generate_env.sh > .env"
   },
   "keywords": [],
   "author": "",
@@ -17,6 +16,8 @@
     "argon2": "^0.44.0",
     "cookie-parser": "^1.4.7",
     "ejs": "^3.1.10",
-    "express": "^5.2.1"
+    "express": "^5.2.1",
+    "node-notifier": "^10.0.1",
+    "serve-favicon": "^2.5.1"
   }
 }

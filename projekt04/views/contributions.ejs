@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/css/core.css">
-    <link rel="stylesheet" href="/css/enemies.css">
+    <link rel="stylesheet" href="/css/body.css">
     <link rel="stylesheet" href="/css/form.css">
     <link rel="stylesheet" href="css/nav.css">
     <title><%= title %></title>
@@ -14,16 +14,16 @@
     <%- include("header.ejs") %>
     <h1><%= title %></h1>
     <% if(is_cookie){ %>
-    <form method="post" action="/dbms/add" id="form">
+    <form method="post" action="/contributions/add" id="form" name="enemy_add" >
         <input type="text" name="Name" id="Enemy_Name" minlength="1" maxlength="500" placeholder="Enemy name" required>
         <input type="text" name="Enemy_Type" id="Enemy_Type" minlength="1" maxlength="500" placeholder="Enemy type" required>
         <input type="number" name="Geo_Dropped" id="Geo_Dropped" minlength="1" maxlength="500" placeholder="Geo Dropped" required>
         <input type="number" name="Health" id="Enemy_Health" minlength="1" maxlength="500" placeholder="Enemy Health" required>
         <input type="number" name="Damage" id="Enemy_Damage" minlength="1" maxlength="500" placeholder="Damage Dealt by Enemy" required>
-        <input type="text" name="CSRF_Token" value="<%= CSRF_Token %>" hidden>
+        <input type="text" name="CSRF_Token" id="CSRF_Token" value="<%= CSRF_Token %>" hidden>
         <input type="submit" value="Send">
     </form><br>
-    <% }else{ %> <p>To be able to contribute to the enemy list, please log in </p> <% } %>
+    <% }else{ %> <p id="problem_msg">To be able to contribute to the enemy list, please log in </p> <% } %>
     <main>
       <table>
         <th>Name</th>
@@ -40,8 +40,8 @@
           <td><%= enemies[i]["Health"] %></td>
           <td><%= enemies[i]["Damage"] %></td>
           <%if(enemies[i]["User_Id"] == user_id || admin_user == 1){ %>
-          <td><form action="/dbms/delete" method="post"><input type="number" value="<%= enemies[i]['Id'] %>" name="Id" hidden><input type="submit" value="Delete" id="Submit"><input type="text" name="CSRF_Token" value="<%= CSRF_Token %>" hidden></form></td>
-          <td><form action="/dbms/pre_change" method="post"><input type="number" value="<%= enemies[i]['Id'] %>" name="Id" hidden><input type="submit" value="Edit" id="Submit"></form></td>
+          <td><form action="/contributions/delete" method="post"><input type="number" value="<%= enemies[i]['Id'] %>" name="Id" hidden> <input type="submit" value="Delete" id="Submit"><input type="text" name="CSRF_Token" value="<%= CSRF_Token %>" hidden></form></td>
+          <td><form action="/contributions/pre_change" method="post"><input type="number" value="<%= enemies[i]['Id'] %>" name="Id" hidden><input type="submit" value="Edit" id="Submit"></form></td>
           <% } %>
         </tr>
         <% } %>

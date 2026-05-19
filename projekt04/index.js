@@ -1,137 +1,125 @@
 import express from "express";
-import { getAllEnemyData, getEnemyData, ValidateInputTypes ,AddEnemyData, DeleteEnemyData, ChangeEnemyData } from "./functionality/db_handlers.js";
-import { createUser, LoginUser, find_user_by_id } from "./functionality/user_handler.js";
-import { deleteSession, getSessionInfoById } from "./functionality/session_handler.js";
 import cookieParser from "cookie-parser";
 
-const port = 8000;
+import { getAllEnemyData, getEnemyDataById, validateInputTypes ,addEnemyData, deleteEnemyData, changeEnemyData } from "./functionality/db_handlers.js";
+import { createUser, loginUser, findUserById, accountCreationHandler, assignUserDataToSession } from "./functionality/user_handler.js";
+import { deleteSession, getSessionInfoById, SESSION_COOKIE_NAME } from "./functionality/session_handler.js";
 
-const app = express();
-app.set("view engine", "ejs");
-app.use(express.static("public"));
-app.use(express.urlencoded())
-app.use(cookieParser());
+const PORT = 8000;
+
+const APP = express();
+APP.set("view engine", "ejs");
+
+APP.use(express.static("public"));
+APP.use(express.urlencoded());
+APP.use(cookieParser());
 
 var help_variable;
+var user;
 
-app.get("/", (req, res) =>{
-    if(!isNaN(req.cookies['session'])){
-        let user_id = Number(Object.values(getSessionInfoById(req.cookies['session']))[1]);
-        res.locals.username = String(Object.values(find_user_by_id(user_id))[2]);
+APP.get("/", (req, res) =>{
+    if(!isNaN(req.cookies[SESSION_COOKIE_NAME]) && user == null){
+        user = assignUserDataToSession(req, SESSION_COOKIE_NAME);   
     }
+
     res.render("enemies",
     {title : "Hunters Journal",
     enemies : getAllEnemyData(),
-    is_cookie : !isNaN(req.cookies['session']),
-    user_name: res.locals.username
+    is_cookie : !isNaN(req.cookies[SESSION_COOKIE_NAME]),
+    user_name: user?.username
     });
 });
 
-app.get("/dbms", (req, res) =>{
-    if(!isNaN(req.cookies['session'])){
-        res.locals.user_id = Number(Object.values(getSessionInfoById(req.cookies['session']))[1]);
-        res.locals.username = String(Object.values(find_user_by_id(res.locals.user_id))[2]);
-        res.locals.isAdmin = Number(Object.values(find_user_by_id(res.locals.user_id))[1]);
-        res.locals.CSRF_Token = String(Object.values(getSessionInfoById(req.cookies['session']))[3]);
-    }
-    res.render("dbms",
-    {title : "Contributions",
+APP.get("/contributions", (req, res) =>{
+    res.render("contributions",
+    {title : "Hunters Journal",
     enemies : getAllEnemyData(),
-    is_cookie : !isNaN(req.cookies['session']),
-    user_name: res.locals.username,
-    user_id: res.locals.user_id,
-    admin_user: res.locals.isAdmin,
-    CSRF_Token: res.locals.CSRF_Token
+    is_cookie : !isNaN(req.cookies[SESSION_COOKIE_NAME]),
+    user_name: user?.username,
+    user_id: user?.user_id,
+    admin_user: user?.isAdmin,
+    CSRF_Token: user?.CSRF_Token
     });
 });
 
-app.get("/sing_up", (req, res) =>{
+APP.get("/sing_up", (req, res) =>{
     res.render("sign_up", 
-    {title : "Account creation", 
-    is_cookie : !isNaN(req.cookies['session']),
-    user_name: res.locals.username,
+    {title : "Account creation",
+    creation_msg : "",
+    is_cookie : !isNaN(req.cookies[SESSION_COOKIE_NAME]),
+    user_name: user?.username,
     });
 });
 
-app.get("/sign_in", (req, res) =>{
+APP.get("/sign_in", (req, res) =>{
     res.render("sign_in", {
         title: "Account log in",
-        is_cookie : !isNaN(req.cookies['session']),
-        user_name: res.locals.username,
+        creation_msg : "",
+        is_cookie : !isNaN(req.cookies[SESSION_COOKIE_NAME]),
+        user_name: user?.username,
     });
 });
 
-app.post("/log_out", (req, res) =>{
-    deleteSession(req.cookies['session']);
-    res.clearCookie('session');
+APP.post("/sign_out", (req, res) =>{
+    deleteSession(req.cookies[SESSION_COOKIE_NAME]);
+    res.clearCookie(SESSION_COOKIE_NAME);
+    user = null;
+
     res.redirect("/");
     res.end();
 });
 
-app.post("/account_create", (req, res) =>{
-    if(createUser(req.body.login, req.body.password, req.body.password_repeat)){
-        res.redirect("/sign_in");
-    }
-    else{
-        res.render("error", {
-            title: "error 400",
-            desc: "the account creation process"
-        });
-    }
+APP.post("/account_sign_up", (req, res) =>{
+    accountCreationHandler(req, res, SESSION_COOKIE_NAME);
 });
 
-app.post("/account_log_in", (req, res) =>{
-    LoginUser(req, res);
+APP.post("/account_sign_in", (req, res) =>{
+    loginUser(req.body.login, req.body.password, res, req);
 });
 
-app.post("/dbms/pre_change", (req, res)=>{
-    if(!isNaN(req.cookies['session'])){
-        res.locals.CSRF_Token = String(Object.values(getSessionInfoById(req.cookies['session']))[3]);
-        res.locals.user_id = Number(Object.values(getSessionInfoById(req.cookies['session']))[1]);
-        res.locals.username = String(Object.values(find_user_by_id(res.locals.user_id))[2]);
-    }
+APP.post("/contributions/pre_change", (req, res)=>{
     res.render("change_menu",
-        {enemy : getEnemyData(req.body.Id),
+        {enemy : getEnemyDataById(req.body.Id),
         title : "Change enemy data",
-        is_cookie : !isNaN(req.cookies['session']),
-        user_name: res.locals.username,
-        CSRF_Token: res.locals.CSRF_Token
+        is_cookie : !isNaN(req.cookies[SESSION_COOKIE_NAME]),
+        user_name: user.username,
+        CSRF_Token: user.CSRF_Token
     });
     help_variable = req.body.Id;
 });
 
-app.post("/dbms/add", (req, res) =>{
-    if(ValidateInputTypes(req.body.Name, req.body.Enemy_Type, req.body.Geo_Dropped, req.body.Health, req.body.Damage, req.body.CSRF_Token, req)){
-        AddEnemyData(req.body.Name, req.body.Enemy_Type, req.body.Geo_Dropped, req.body.Health, req.body.Damage, req);
-        res.redirect("/dbms");
+APP.post("/contributions/add", (req, res) =>{
+    if(validateInputTypes(req.body.Name, req.body.Enemy_Type, req.body.Geo_Dropped, req.body.Health, req.body.Damage, req.body.CSRF_Token, user)){
+        addEnemyData(req.body.Name, req.body.Enemy_Type, req.body.Geo_Dropped, req.body.Health, req.body.Damage, user);
+        res.redirect("/contributions");
     }
     else{
         res.status(400);
-        res.render("error",
-        { title : "error 400",
-        desc : "input validation"
+        res.render("error", { 
+        title : "error 400",
+        desc : "Something went wrong with the input validation, please make sure that the given by you data was inline with the instructions"
         });
     }
 });
-app.post("/dbms/delete", (req, res)=>{
-        DeleteEnemyData(req.body.Id, req.body.CSRF_Token, req);
-        res.redirect("/dbms");
+APP.post("/contributions/delete", (req, res)=>{
+        deleteEnemyData(req.body.Id, req.body.CSRF_Token, user);
+        res.redirect("/contributions");
 });
-app.post("/dbms/change", (req, res)=>{
-    if(ValidateInputTypes(req.body.Name, req.body.Enemy_Type, req.body.Geo_Dropped, req.body.Health, req.body.Damage, req.body.CSRF_Token, req)){
-        ChangeEnemyData(help_variable, req.body.Name, req.body.Enemy_Type, req.body.Geo_Dropped, req.body.Health, req.body.Damage);
+APP.post("/contributions/change", (req, res)=>{
+    if(validateInputTypes(req.body.Name, req.body.Enemy_Type, req.body.Geo_Dropped, req.body.Health, req.body.Damage, req.body.CSRF_Token, user)){
+        changeEnemyData(req.body.Name, req.body.Enemy_Type, req.body.Geo_Dropped, req.body.Health, req.body.Damage, help_variable);
         help_variable = undefined;
-        res.redirect("/dbms");
+        res.redirect("/contributions");
     }
     else{
         res.status(400);
-        res.render("error",
-        { title : "error 400" }
-        );
+        res.render("error", { 
+        title : "error 400",
+        desc : "Something went wrong with the input validation, please make sure that the given by you data was inline with the instructions"
+        });
     }
 });
 
-
-app.listen(port, () =>{
-    console.log(`Server listening on http://localhost:${port}`);
+APP.listen(PORT, () =>{
+    console.log(`Server listening on http://localhost:${PORT}`);
 });

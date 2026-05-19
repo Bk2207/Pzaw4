@@ -1,10 +1,22 @@
 import { DatabaseSync } from "node:sqlite";
+
 import { getSessionInfoById } from "./session_handler.js";
 
-const db_path = "./db.sqlite";
-const db = new DatabaseSync(db_path);
+const DB_PATH = "./db.sqlite";
+const DB = new DatabaseSync(DB_PATH);
 
-db.exec(`CREATE TABLE IF NOT EXISTS "Hk_Enemies" (
+const DB_STATEMENTS = {
+    enemies_data: DB.prepare("SELECT Id, User_Id, Name, Enemy_Type, Geo_Dropped, Health, Damage FROM Hk_Enemies;"),
+    enemy_data: DB.prepare(`SELECT * FROM Hk_Enemies WHERE Id = ?;`),
+    enemy_insert: DB.prepare(`INSERT INTO Hk_Enemies(User_Id, Name, Enemy_Type, Geo_Dropped, Health, Damage) VALUES (?, ?, ?, ?, ?, ?);`),
+    enemy_delete: DB.prepare(`DELETE FROM Hk_Enemies WHERE Id = ?`),
+    enemy_change: DB.prepare(`UPDATE Hk_Enemies SET Name = ?, Enemy_Type = ?, Geo_Dropped = ?, Health = ?, Damage = ? WHERE Id = ?;`)
+};
+
+createEnemiesTable();
+
+export function createEnemiesTable(){
+    DB.exec(`CREATE TABLE IF NOT EXISTS "Hk_Enemies" (
 	"Id"	INTEGER,
     "User_Id" INTEGER,
 	"Name"	TEXT NOT NULL,
@@ -14,40 +26,41 @@ db.exec(`CREATE TABLE IF NOT EXISTS "Hk_Enemies" (
 	"Damage"	INTEGER NOT NULL,
 	PRIMARY KEY("Id" AUTOINCREMENT)
 );` );
+}
 
 export function getAllEnemyData(){
-    var Enemy_data = db.prepare("SELECT Id, User_Id, Name, Enemy_Type, Geo_Dropped, Health, Damage FROM Hk_Enemies;").all();
-    return Enemy_data;
+    return DB_STATEMENTS.enemies_data.all();
 }
 
-export function getEnemyData(id){
-    var Enemy_data = db.prepare(`SELECT * FROM Hk_Enemies WHERE Id = ?;`).get(id);
-    return Enemy_data;
+export function getEnemyDataById(id){
+    return DB_STATEMENTS.enemy_data.get(id);
 }
 
-export function AddEnemyData(name, enemy_type, geo_dropped, health, damage, req){
-    let user_id = Number(Object.values(getSessionInfoById(req.cookies['session']))[1]);
-    db.prepare(`INSERT INTO Hk_Enemies(User_Id, Name, Enemy_Type, Geo_Dropped, Health, Damage) VALUES (?, ?, ?, ?, ?, ?);`).run(user_id, name, enemy_type, geo_dropped, health, damage);
+export function addEnemyData(name, enemy_type, geo_dropped, health, damage, user){
+    let user_id = user.user_id;
+    DB_STATEMENTS.enemy_insert.run(user_id, name, enemy_type, geo_dropped, health, damage);
 }
 
-export function DeleteEnemyData(id, CSRF_Token, req){
-    if(CSRF_Token != String(Object.values(getSessionInfoById(req.cookies['session']))[3])){
+export function deleteEnemyData(id, CSRF_Token, user){
+    if(CSRF_Token != user.CSRF_Token){
         return;
     }
-    db.prepare(`DELETE FROM Hk_Enemies WHERE Id = ?`).run(id);
+
+    DB_STATEMENTS.enemy_delete.run(id);
 }
 
-export function ChangeEnemyData(id, name, enemy_type, geo_dropped, health, damage){
-    db.prepare(`UPDATE Hk_Enemies SET Name = ?, Enemy_Type = ?, Geo_Dropped = ?, Health = ?, Damage = ? WHERE Id = ?;`).run(name, enemy_type, geo_dropped, health, damage, id);
+export function changeEnemyData(name, enemy_type, geo_dropped, health, damage, enemy_id){
+    DB_STATEMENTS.enemy_change.run(name, enemy_type, geo_dropped, health, damage, enemy_id);
 }
 
-export function ValidateInputTypes(name, enemy_type, geo_dropped, health, damage, CSRF_Token, req){
-    if(CSRF_Token != String(Object.values(getSessionInfoById(req.cookies['session']))[3])){
+export function validateInputTypes(enemy_name, enemy_type, geo_dropped, health, damage, CSRF_Token, user){
+
+    if( (CSRF_Token != user.CSRF_Token) && (user.is_admin) ){
         return false;
     }
 
     var Errors = [];
-    var string_fields = [name, enemy_type];
+    var string_fields = [enemy_name, enemy_type];
     var numeric_fields = [Number(geo_dropped), Number(health), Number(damage)];
 
     for( let data_cell of string_fields ){
@@ -55,7 +68,7 @@ export function ValidateInputTypes(name, enemy_type, geo_dropped, health, damage
    
         if(typeof data_cell != "string"){ Errors.push("Unexpected variable type (expected string)"); continue; }
        
-        if(data_cell < 1 || data_cell > 500){ Errors.push("Unexpected lenght (should be 1 - 500)"); continue; }
+        if(data_cell.length < 1 || data_cell.length > 500){ Errors.push("Unexpected input lenght (should be 1 - 500)"); continue; }
     }
 
     for( let data_cell of numeric_fields ){
@@ -65,10 +78,10 @@ export function ValidateInputTypes(name, enemy_type, geo_dropped, health, damage
        
         let stringified_data_cell = data_cell.toString();
 
-        if( stringified_data_cell < 1 || stringified_data_cell > 500){ Errors.push("Unexpected lenght (should be 1 - 500)"); continue; }
+        if( stringified_data_cell.length < 1 || stringified_data_cell.length > 500){ Errors.push("Unexpected input lenght (should be 1 - 500)"); continue; }
 
     }
-
+    
     if(Errors.length > 0){
         return false;
     }
@@ -79,9 +92,10 @@ export function ValidateInputTypes(name, enemy_type, geo_dropped, health, damage
 
 export default{
     getAllEnemyData,
-    getEnemyData,
-    ValidateInputTypes,
-    AddEnemyData,
-    DeleteEnemyData,
-    ChangeEnemyData,
+    getEnemyDataById,
+    validateInputTypes,
+    addEnemyData,
+    deleteEnemyData,
+    changeEnemyData,
+    createEnemiesTable
 };
