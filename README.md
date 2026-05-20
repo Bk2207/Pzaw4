@@ -1,6 +1,9 @@
 # Wymagane moduły
 
-argon2, cookie-parser, ejs, express
+argon2 <br> 
+cookie-parser <br> 
+ejs <br> 
+express
 
 wszystkie moduły powinny zostać zainstalowane komendą w konsoli: "npm install <nazwa modułu>"
 
@@ -8,7 +11,7 @@ wszystkie moduły powinny zostać zainstalowane komendą w konsoli: "npm install
 
 W konsoli powinny być wpisane kolejno komendy aby zapewnić poprawne uruchomienie:
 
-npm run generate_env
+npm run generate_env <br>
 npm run app
 
 # Dodatkowa funkcjonalność
