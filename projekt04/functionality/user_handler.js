@@ -19,13 +19,13 @@ const HASH_PARAM = {
 const DB_PATH = "./db.sqlite";
 const DB = new DatabaseSync(DB_PATH);
 
+createUsersTable();
+
 const USER_STATEMENTS = {
     find_user_by_username: DB.prepare("SELECT * FROM 'Users' WHERE Users.User_name = ?;"),
     find_user_by_id: DB.prepare("SELECT * FROM 'Users' WHERE Users.Id = ?;"),
     create_user: DB.prepare("INSERT INTO Users(Is_admin, User_name, Pass_hash, Created_at) VALUES (?, ?, ?, ?);")
 };
-
-createUsersTable();
 
 export function createUsersTable(){
     DB.exec(`CREATE TABLE IF NOT EXISTS "Users" (
@@ -46,7 +46,7 @@ export function findUserById(id){
     return USER_STATEMENTS.find_user_by_id.get(id);
 }
 
-export async function createUser(username, password, password_repeat){
+export async function createUser(username, password, password_repeat, is_admin = 0){
     if(findUserByUsername(username) != null){
         return new Array(false, "Given username already exists");
     }
@@ -55,13 +55,13 @@ export async function createUser(username, password, password_repeat){
         return new Array(false, "Repeated passwords are different");
     }
 
-    if(username.length < 3 || username.length > 200){
+    if(String(username).length < 3 || String(username).length > 200){
         return new Array(false, "Given username isnt in the allowd length brackets (3 - 200) ");
     }
 
     let Created_at = Date.now();
     let Pass_hash = await argon2.hash(password, HASH_PARAM);
-    USER_STATEMENTS.create_user.run(0, username, Pass_hash, Created_at);
+    USER_STATEMENTS.create_user.run(is_admin, username, Pass_hash, Created_at);
 
     return new Array(true, "Account sucesfully created");
 }
@@ -140,6 +140,8 @@ export function assignUserDataToSession(req, SESSION_COOKIE_NAME){
         username: String(USER_INFO[2]),
         CSRF_Token: String(SESSION_INFO[3])
     }
+
+    console.log(USER_OBJ.is_admin);
 
     return USER_OBJ;
 }

@@ -16,8 +16,6 @@
     "argon2": "^0.44.0",
     "cookie-parser": "^1.4.7",
     "ejs": "^3.1.10",
-    "express": "^5.2.1",
-    "node-notifier": "^10.0.1",
-    "serve-favicon": "^2.5.1"
+    "express": "^5.2.1"
   }
 }

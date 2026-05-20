@@ -8,8 +8,8 @@ const DB = new DatabaseSync(DB_PATH);
 
 createEnemiesTable();
 createUsersTable();
-//if this goes to shit change lets to vars and suck it up
-let Name = ["Crawlid", "TikTik", "Husk Guard", "Void Tendrils", "Dsigraced Chef Lugoli", "Gruz", "Elder Baldur", "Baldur", "Grand Mother Silk", "Moss Knight"];
+
+let Name = ["Crawlid", "TikTik", "Husk Guard", "Void Tendrils", "Disgraced Chef Lugoli", "Gruz", "Elder Baldur", "Baldur", "Grand Mother Silk", "Moss Knight"];
 let Enemy_type = ["Normal", "MiniBoss", "Boss"];
 
 let User_name = ["Cave Johnson", "Master Chief", "Gordon Freeman", "UndefinedUser120", "asdfyuiawDTGW"];
@@ -22,5 +22,4 @@ for (let i = 0; i < 5; i++){
     createUser(User_name[i], "123", "123");
 }
 
-createUser("Admin", "Admin", "Admin");
-DB.prepare(`UPDATE Users SET Is_admin = ? WHERE Users.User_name = 'Admin'`).run(1);
+createUser("Admin", "Admin", "Admin", 1);

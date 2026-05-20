@@ -37,7 +37,7 @@ APP.get("/contributions", (req, res) =>{
     is_cookie : !isNaN(req.cookies[SESSION_COOKIE_NAME]),
     user_name: user?.username,
     user_id: user?.user_id,
-    admin_user: user?.isAdmin,
+    admin_user: user?.is_admin,
     CSRF_Token: user?.CSRF_Token
     });
 });

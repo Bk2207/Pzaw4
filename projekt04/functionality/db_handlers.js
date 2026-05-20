@@ -1,9 +1,9 @@
 import { DatabaseSync } from "node:sqlite";
 
-import { getSessionInfoById } from "./session_handler.js";
-
 const DB_PATH = "./db.sqlite";
 const DB = new DatabaseSync(DB_PATH);
+
+createEnemiesTable();
 
 const DB_STATEMENTS = {
     enemies_data: DB.prepare("SELECT Id, User_Id, Name, Enemy_Type, Geo_Dropped, Health, Damage FROM Hk_Enemies;"),
@@ -12,8 +12,6 @@ const DB_STATEMENTS = {
     enemy_delete: DB.prepare(`DELETE FROM Hk_Enemies WHERE Id = ?`),
     enemy_change: DB.prepare(`UPDATE Hk_Enemies SET Name = ?, Enemy_Type = ?, Geo_Dropped = ?, Health = ?, Damage = ? WHERE Id = ?;`)
 };
-
-createEnemiesTable();
 
 export function createEnemiesTable(){
     DB.exec(`CREATE TABLE IF NOT EXISTS "Hk_Enemies" (
@@ -72,14 +70,13 @@ export function validateInputTypes(enemy_name, enemy_type, geo_dropped, health, 
     }
 
     for( let data_cell of numeric_fields ){
-        if(!data_cell){ Errors.push("Empty field detected"); continue; }
+        if(!data_cell && data_cell != 0){ Errors.push("Empty field detected"); continue; }
 
         if(typeof data_cell != "number"){ Errors.push("Unexpected variable type (expected number)"); continue; }
        
         let stringified_data_cell = data_cell.toString();
 
-        if( stringified_data_cell.length < 1 || stringified_data_cell.length > 500){ Errors.push("Unexpected input lenght (should be 1 - 500)"); continue; }
-
+        if(stringified_data_cell.length < 1 || stringified_data_cell.length > 500){ Errors.push("Unexpected input lenght (should be 1 - 500)"); continue; }
     }
     
     if(Errors.length > 0){

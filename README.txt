@@ -1,7 +1,19 @@
-Moduły wymagane do poprawnego działania aplikacji to: "argon2", "cookie-parser", "ejs", "express"
-Przed rozpoczęciem programu należy wpisać do konosoli "npm run generate_env" dla poprawnego działania
+#Wymagane moduły
 
-Program jest uruchaminay komendą "npm run app"
+argon2
+cookie-parser
+ejs
+express
 
-Baza danych może zostać zapełniona próbnymi danymi za pomocą komendy - "npm run seeder"
-Konto admin może zostać stworzone za pomocą komendy - "npm run create_admin"
+wszystkie moduły powinny zostać zainstalowane komendą w konsoli: "npm install <nazwa modułu>"
+
+#Uruchamianie aplikacji
+
+W konsoli powinny być wpisane kolejno komendy aby zapewnić poprawne uruchomienie:
+
+npm run generate_env
+npm run app
+
+#Dodatkowa funkcjonalność
+
+komenda "npm run seeder" wypełnia baze danych przykładowymi użytkownikami oraz danymi, komenda ta tworzy rownież użytkownika Admin o haśle Admin, który ma możliwość edycji oraz usuwania wszystkich pól w bazie danych
