@@ -1,3 +1,5 @@
+*Ten read me zakłada że wszystkie komendy są uruchamiane z poziomu folderu "projekt04"*
+
 # Wymagane moduły
 
 argon2 <br> 
