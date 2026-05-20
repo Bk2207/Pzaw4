@@ -16,4 +16,6 @@ npm run app
 
 # Dodatkowa funkcjonalność
 
-komenda "npm run seeder" wypełnia baze danych przykładowymi użytkownikami oraz danymi, komenda ta tworzy rownież użytkownika Admin o haśle Admin, który ma możliwość edycji oraz usuwania wszystkich pól w bazie danych
+komenda "npm run seeder" wypełnia baze danych przykładowymi użytkownikami oraz danymi, komenda ta tworzy rownież użytkownika Admin o haśle Admin, który ma możliwość edycji oraz usuwania wszystkich pól w bazie danych <br> <br>
+
+**Dla bezpieczeństwa zalecane jest nie uruchamianie komendy "npm run seeder" kiedy aplikacja jest w działaniu**
