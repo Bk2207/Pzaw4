@@ -1,9 +1,6 @@
 # Wymagane moduły
 
-argon2
-cookie-parser
-ejs
-express
+argon2, cookie-parser, ejs, express
 
 wszystkie moduły powinny zostać zainstalowane komendą w konsoli: "npm install <nazwa modułu>"
 
